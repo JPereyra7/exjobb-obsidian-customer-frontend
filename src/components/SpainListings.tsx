@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { iListings } from "../models/iListings";
 import { getListingsByCategory } from "../../src/services/listingService";
+import { useNavigate } from "react-router-dom";
 
 export const SpainListings = () => {
   const [spain, setSpain] = useState<iListings[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSpain = async () => {
@@ -25,6 +27,7 @@ export const SpainListings = () => {
         {spain.map((spain) => (
           <div
             key={spain.id}
+            onClick={() => navigate(`/listing/${spain.id}`)}
             className="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer"
           >
             {/* Image Container */}
