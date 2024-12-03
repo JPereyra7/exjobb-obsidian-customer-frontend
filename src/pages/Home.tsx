@@ -1,5 +1,5 @@
 import { SpainListings } from "../components/SpainListings";
-import VillasListings from "../components/VillasListings"; // Import the component
+import VillasListings from "../components/VillasListings";
 
 export const Home = () => {
   return (
