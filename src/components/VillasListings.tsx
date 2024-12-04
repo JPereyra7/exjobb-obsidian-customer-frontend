@@ -37,7 +37,7 @@ export const VillasListings = () => {
                 alt={villa.propertytitle}
                 className="w-full h-64 object-cover"
               />
-              {/* Status Tag */}
+              {/* For Sale or Sold Tag */}
               <div className="absolute top-4 right-4">
                 <span
                   className={`${
@@ -47,7 +47,7 @@ export const VillasListings = () => {
                   {villa.activelisting ? "For Sale" : "Sold"}
                 </span>
               </div>
-              {/* Favorite Button */}
+              {/* Favorite Button might remove! */}
               <button className="absolute top-4 left-5 p-2 rounded-full bg-white/70 hover:bg-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -69,14 +69,14 @@ export const VillasListings = () => {
             {/* Content */}
             <div className="p-6">
               <div className="mb-4">
-                <span className="text-2xl font-bold">
+                <span className="text-xl font-bold text-slate-900">
                   ${villa.propertyprice.toLocaleString()}
                 </span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">
+              <h3 className="text-l font-bold mb-2">
                 {villa.propertytitle}
               </h3>
-              <p className="text-gray-600 line-clamp-2 mb-4">
+              <p className="text-gray-500 line-clamp-2 mb-4">
                 {villa.propertydescription}
               </p>
 

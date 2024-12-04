@@ -5,7 +5,7 @@ export const Home = () => {
   return (
     <>
       <div className="relative min-h-[80vh] mb-8">
-        {/* Hero Background */}
+        {/* Hero Section */}
         <div
           className="absolute inset-0 w-full h-full bg-cover bg-center"
           style={{
@@ -16,17 +16,14 @@ export const Home = () => {
           <div className="absolute inset-0 bg-black/60"></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
-          {/* Small decoration */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-36">
           <div className="w-16 h-2 bg-[#d3c196] mb-6"></div>
-
-          {/* Hero Text */}
-          <h1 className="text-5xl font-bold text-white mb-4">
+          <h1 className="text-5xl font-bold text-white mb-4 px-4">
             Lillard & Co
             <br />
             Luxury Real Estate Broker
           </h1>
-          <p className="text-white/80 max-w-2xl mb-12">
+          <p className="text-white/80 max-w-2xl mb-12 px-4">
             We are recognized for exceeding client expectations and delivering
             great results through dedication, ease of process, and extraordinary
             services to our worldwide clients. From the sunny coasts of Spain to
@@ -34,60 +31,123 @@ export const Home = () => {
             exceptional quality.
           </p>
 
-          {/* Search Section */}
-          <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Toggle Buttons */}
-              <div className="flex gap-2">
-                <button className="px-6 py-2 bg-[#d3c196] text-white rounded">
-                  Sales
-                </button>
-                <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
-                  Rentals
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-grow">
-                <select className="w-full p-2 border rounded">
-                  <option>Select Category</option>
-                </select>
-                {/* Input options */}
-                <input
-                  type="text"
-                  placeholder="Enter an address, state, city, area or zip code"
-                  className="w-full p-2 border rounded"
-                />
+          {/* Desktop Search Section */}
+          <div className="hidden md:flex justify-center items-center gap-2 max-w-6xl mx-auto">
+            <div className="flex w-full md:w-auto flex-1">
+              <input
+                type="text"
+                placeholder="Search by location"
+                className="w-full px-4 py-3 border-0 rounded-l outline-none"
+              />
+            </div>
 
-                <select className="w-full p-2 border rounded">
-                  <option>Select Bedrooms</option>
-                  {/* Add bedroom options */}
-                </select>
-              </div>
+            <div className="flex w-full md:w-auto">
+              <select className="px-4 py-3 border-l border-gray-200 outline-none bg-white">
+                <option>Property Type</option>
+                <option>Villa</option>
+                <option>Apartment</option>
+                <option>House</option>
+              </select>
+            </div>
 
-              {/* Search Button */}
-              <button className="p-2 bg-[#d3c196] text-white rounded w-full md:w-auto">
+            <div className="flex w-full md:w-auto">
+              <select className="px-4 py-3 border-l border-gray-200 outline-none bg-white">
+                <option>Country</option>
+                <option>Spain</option>
+                <option>USA</option>
+              </select>
+            </div>
+
+            <button className="w-full md:w-auto px-8 py-3 bg-[#d3c196] text-white font-medium rounded-r hover:bg-[#b8a578] transition-colors">
+              SEARCH
+            </button>
+          </div>
+
+          {/* Mobile Search Section */}
+          <div className="md:hidden bg-transparent border-1 border border-white p-6 rounded-lg max-w-sm mx-auto">
+            <div className="flex flex-col gap-4">
+              <input
+                type="text"
+                placeholder="Search by location"
+                className="w-full px-4 py-3 border border-gray-200 rounded outline-none"
+              />
+
+              <select className="w-full px-4 py-3 border border-gray-200 rounded outline-none bg-white appearance-none">
+                <option>Property Type</option>
+                <option>Villa</option>
+                <option>Apartment</option>
+                <option>House</option>
+              </select>
+
+              <select className="w-full px-4 py-3 border border-gray-200 rounded outline-none bg-white appearance-none">
+                <option>Country</option>
+                <option>Spain</option>
+                <option>USA</option>
+              </select>
+
+              <button className="w-full px-8 py-3 bg-[#d3c196] text-white font-medium rounded hover:bg-[#b8a578] transition-colors flex items-center justify-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
                   />
                 </svg>
+                SEARCH
               </button>
+            </div>
+          </div>
+
+          {/* Three dots with info */}
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 mt-12 text-white text-sm md:text-base">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#d3c196]"></span>
+              <span>10,000+ HOMES SOLD</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#d3c196]"></span>
+              <span>2 BILLION $ IN SALES</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#d3c196]"></span>
+              <span>4,000+ SATISFIED CUSTOMERS</span>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Villas Listings Section */}
       <div className="bg-gray-50 py-16">
         <VillasListings />
+      </div>
+
+      {/* Marketing Hero Section */}
+      <div className="relative min-h-[60vh]">
+        <div
+          className="absolute inset-0 w-full h-full bg-cover bg-center"
+          style={{
+            backgroundImage: `url('https://img.jamesedition.com/listing_images/2024/09/30/16/03/26/9143142c-3680-45f1-9c61-8512c58e7ca2/je/1900xxs.jpg')`,
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Discover Your Dream Home in Spain
+          </h2>
+          <p className="text-white/80 max-w-2xl mb-8">
+            Experience the perfect blend of luxury and comfort in the most
+            luxurious locations across the Iberian Peninsula. From beachfront
+            villas to urban penthouses, find your perfect Spanish retreat.
+          </p>
+          <button className="px-8 py-3 bg-[#d3c196] text-white font-medium rounded hover:bg-[#b8a578] transition-colors">
+            Explore Spanish Properties
+          </button>
+        </div>
       </div>
 
       <div className="bg-gray-50 py-16">
