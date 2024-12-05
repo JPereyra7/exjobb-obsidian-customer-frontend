@@ -1,31 +1,14 @@
-import { useEffect, useState } from "react";
-import { iListings } from "../models/iListings";
-import { getListingsByCategory } from "../../src/services/listingService";
 import { useNavigate } from "react-router-dom";
 import { SpainListingsProps } from "../models/SpainListingsProps";
 
 export const SpainListings = ({ data }: SpainListingsProps) => {
-  const [spain, setSpain] = useState<iListings[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchSpain = async () => {
-      try {
-        const data = await getListingsByCategory("spain");
-        setSpain(data);
-      } catch (error) {
-        console.error("Error fetching villas:", error);
-      }
-    };
-
-    fetchSpain();
-  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl font-semibold mb-8">Marvelous Spain</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {spain.map((spain) => (
+        {data.map((spain) => (
           <div
             key={spain.id}
             onClick={() => navigate(`/listing/${spain.id}`)}
@@ -38,7 +21,7 @@ export const SpainListings = ({ data }: SpainListingsProps) => {
                 alt={spain.propertytitle}
                 className="w-full h-64 object-cover"
               />
-              {/* Status Tag */}
+              {/* For Sale or Sold Tag  */}
               <div className="absolute top-4 right-4">
                 <span
                   className={`${

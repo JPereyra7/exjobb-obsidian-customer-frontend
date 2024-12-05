@@ -1,31 +1,14 @@
-import { useEffect, useState } from "react";
-import { iListings } from "../models/iListings";
-import { getListingsByCategory } from "../../src/services/listingService";
 import { useNavigate } from "react-router-dom";
 import { VillasListingsProps } from "../models/VillasListingsProps";
 
 export const VillasListings = ({ data }: VillasListingsProps) => {
-  const [villas, setVillas] = useState<iListings[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchVillas = async () => {
-      try {
-        const data = await getListingsByCategory("villas");
-        setVillas(data);
-      } catch (error) {
-        console.error("Error fetching villas:", error);
-      }
-    };
-
-    fetchVillas();
-  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl font-semibold mb-8">Luxury Villas</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {villas.map((villa) => (
+        {data.map((villa) => (
           <div
             key={villa.id}
             onClick={() => navigate(`/listing/${villa.id}`)}

@@ -1,31 +1,14 @@
-import { useEffect, useState } from "react";
-import { iListings } from "../models/iListings";
-import { getListingsByCategory } from "../../src/services/listingService";
 import { useNavigate } from "react-router-dom";
 import { ApartmentsListingsProps } from "../models/ApartmentsListingsProps";
 
 export const ApartmentsListings = ({ data }: ApartmentsListingsProps) => {
-  const [apartments, setApartments] = useState<iListings[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchApartments = async () => {
-      try {
-        const data = await getListingsByCategory("apartments");
-        setApartments(data);
-      } catch (error) {
-        console.error("Error fetching villas:", error);
-      }
-    };
-
-    fetchApartments();
-  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl font-semibold mb-8">Majestic Apartments</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {apartments.map((apartments) => (
+        {data.map((apartments) => (
           <div
             key={apartments.id}
             onClick={() => navigate(`/listing/${apartments.id}`)}
@@ -38,7 +21,7 @@ export const ApartmentsListings = ({ data }: ApartmentsListingsProps) => {
                 alt={apartments.propertytitle}
                 className="w-full h-64 object-cover"
               />
-              {/* Status Tag */}
+              {/* For Sale or Sold Tag  */}
               <div className="absolute top-4 right-4">
                 <span
                   className={`${
@@ -49,8 +32,6 @@ export const ApartmentsListings = ({ data }: ApartmentsListingsProps) => {
                 </span>
               </div>
             </div>
-
-            {/* Content */}
             <div className="p-6">
               <div className="mb-4">
                 <span className="text-2xl font-bold">
@@ -104,7 +85,9 @@ export const ApartmentsListings = ({ data }: ApartmentsListingsProps) => {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  {apartments.category.includes("apartments") ? "Spain" : "Florida"}
+                  {apartments.category.includes("apartments")
+                    ? "Spain"
+                    : "Florida"}
                 </div>
               </div>
             </div>
