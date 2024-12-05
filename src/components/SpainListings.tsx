@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { iListings } from "../models/iListings";
 import { getListingsByCategory } from "../../src/services/listingService";
 import { useNavigate } from "react-router-dom";
+import { SpainListingsProps } from "../models/SpainListingsProps";
 
-export const SpainListings = () => {
+export const SpainListings = ({ data }: SpainListingsProps) => {
   const [spain, setSpain] = useState<iListings[]>([]);
   const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ export const SpainListings = () => {
           <div
             key={spain.id}
             onClick={() => navigate(`/listing/${spain.id}`)}
-            className="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer"
+            className="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:opacity-80 hover:transition duration-700"
           >
             {/* Image Container */}
             <div className="relative">
@@ -47,26 +48,7 @@ export const SpainListings = () => {
                   {spain.activelisting ? "For Sale" : "Sold"}
                 </span>
               </div>
-              {/* Favorite Button */}
-              <button className="absolute top-4 left-5 p-2 rounded-full bg-white/70 hover:bg-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              </button>
             </div>
-
-            {/* Content */}
             <div className="p-6">
               <div className="mb-4">
                 <span className="text-2xl font-bold">

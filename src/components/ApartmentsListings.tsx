@@ -2,62 +2,66 @@ import { useEffect, useState } from "react";
 import { iListings } from "../models/iListings";
 import { getListingsByCategory } from "../../src/services/listingService";
 import { useNavigate } from "react-router-dom";
-import { VillasListingsProps } from "../models/VillasListingsProps";
+import { ApartmentsListingsProps } from "../models/ApartmentsListingsProps";
 
-export const VillasListings = ({ data }: VillasListingsProps) => {
-  const [villas, setVillas] = useState<iListings[]>([]);
+export const ApartmentsListings = ({ data }: ApartmentsListingsProps) => {
+  const [apartments, setApartments] = useState<iListings[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchVillas = async () => {
+    const fetchApartments = async () => {
       try {
-        const data = await getListingsByCategory("villas");
-        setVillas(data);
+        const data = await getListingsByCategory("apartments");
+        setApartments(data);
       } catch (error) {
         console.error("Error fetching villas:", error);
       }
     };
 
-    fetchVillas();
+    fetchApartments();
   }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-semibold mb-8">Luxury Villas</h2>
+      <h2 className="text-3xl font-semibold mb-8">Majestic Apartments</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {villas.map((villa) => (
+        {apartments.map((apartments) => (
           <div
-            key={villa.id}
-            onClick={() => navigate(`/listing/${villa.id}`)}
+            key={apartments.id}
+            onClick={() => navigate(`/listing/${apartments.id}`)}
             className="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer hover:opacity-80 hover:transition duration-700"
           >
             {/* Image Container */}
             <div className="relative">
               <img
-                src={villa.mainimage}
-                alt={villa.propertytitle}
+                src={apartments.mainimage}
+                alt={apartments.propertytitle}
                 className="w-full h-64 object-cover"
               />
-              {/* For Sale or Sold Tag */}
+              {/* Status Tag */}
               <div className="absolute top-4 right-4">
                 <span
                   className={`${
-                    villa.activelisting ? "bg-teal-500" : "bg-red-700"
+                    apartments.activelisting ? "bg-green-600" : "bg-red-600"
                   } text-white px-3 py-1 rounded-full text-sm`}
                 >
-                  {villa.activelisting ? "For Sale" : "Sold"}
+                  {apartments.activelisting ? "For Sale" : "Sold"}
                 </span>
               </div>
             </div>
+
+            {/* Content */}
             <div className="p-6">
               <div className="mb-4">
-                <span className="text-xl font-bold text-slate-900">
-                  ${villa.propertyprice.toLocaleString()}
+                <span className="text-2xl font-bold">
+                  ${apartments.propertyprice.toLocaleString()}
                 </span>
               </div>
-              <h3 className="text-l font-bold mb-2">{villa.propertytitle}</h3>
-              <p className="text-gray-500 line-clamp-2 mb-4">
-                {villa.propertydescription}
+              <h3 className="text-xl font-semibold mb-2">
+                {apartments.propertytitle}
+              </h3>
+              <p className="text-gray-600 line-clamp-2 mb-4">
+                {apartments.propertydescription}
               </p>
 
               {/* Property Details */}
@@ -77,7 +81,7 @@ export const VillasListings = ({ data }: VillasListingsProps) => {
                       d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                     />
                   </svg>
-                  Villa
+                  Apartment
                 </div>
                 <div className="flex items-center">
                   <svg
@@ -100,7 +104,7 @@ export const VillasListings = ({ data }: VillasListingsProps) => {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  {villa.category.includes("spain") ? "Spain" : "Florida"}
+                  {apartments.category.includes("apartments") ? "Spain" : "Florida"}
                 </div>
               </div>
             </div>
@@ -110,5 +114,4 @@ export const VillasListings = ({ data }: VillasListingsProps) => {
     </div>
   );
 };
-
-export default VillasListings;
+export default ApartmentsListings;

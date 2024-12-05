@@ -1,18 +1,105 @@
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { ApartmentsListings } from "../components/ApartmentsListings";
+import SpainHero from "../components/SpainHero";
 import { SpainListings } from "../components/SpainListings";
+import Team from "../components/Team";
 import VillasListings from "../components/VillasListings";
+import { getListingsByCategory } from "../services/listingService";
+import { iListings } from "../models/iListings";
+
+interface FilteredListings {
+  villas: iListings[];
+  spain: iListings[];
+  apartments: iListings[];
+}
 
 export const Home = () => {
+  const navigate = useNavigate();
+  const [suggestions, setSuggestions] = useState<iListings[]>([]);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const containerRef = useRef<null | HTMLDivElement>(null);
+  
+  const [searchParams, setSearchParams] = useState({
+    location: "",
+    propertyType: "",
+    country: "",
+  });
+
+  const [filteredListings, setFilteredListings] = useState<FilteredListings>({
+    villas: [],
+    spain: [],
+    apartments: [],
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const villas = await getListingsByCategory("villas");
+        const spain = await getListingsByCategory("spain");
+        const apartments = await getListingsByCategory("apartments");
+
+        setFilteredListings({ villas, spain, apartments });
+      } catch (error) {
+        console.error("Error fetching filtered data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
+  const handleSuggestionClick = (id: string) => {
+    navigate(`/listing/${id}`);
+    setIsDropdownVisible(false);
+  };
+
+  const handleSearchInput = (field: string, value: string) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    if (field === "location") {
+      const allListings = [
+        ...filteredListings.villas,
+        ...filteredListings.spain,
+        ...filteredListings.apartments,
+      ];
+      const filtered = allListings.filter((listing) =>
+        listing.propertytitle.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filtered);
+      setIsDropdownVisible(filtered.length > 0);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchParams((prev) => ({ ...prev, location: "" }));
+    setSuggestions([]);
+    setIsDropdownVisible(false);
+  };
+
   return (
     <>
-      <div className="relative min-h-[80vh] mb-8">
+      <div className="relative min-h-[80vh]">
         {/* Hero Section */}
-        <div
+       <div
           className="absolute inset-0 w-full h-full bg-cover bg-center"
           style={{
             backgroundImage: `url('https://img.jamesedition.com/listing_images/2024/10/03/11/21/25/3b9daabf-e88c-41e3-957e-1390f8bc86f9/je/1900xxsxm.jpg')`,
           }}
         >
-          {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-black/60"></div>
         </div>
 
@@ -31,128 +118,92 @@ export const Home = () => {
             exceptional quality.
           </p>
 
-          {/* Desktop Search Section */}
-          <div className="hidden md:flex justify-center items-center gap-2 max-w-6xl mx-auto">
-            <div className="flex w-full md:w-auto flex-1">
-              <input
-                type="text"
-                placeholder="Search by location"
-                className="w-full px-4 py-3 border-0 rounded-l outline-none"
-              />
-            </div>
-
-            <div className="flex w-full md:w-auto">
-              <select className="px-4 py-3 border-l border-gray-200 outline-none bg-white">
+          {/* Search Section + Mobile */}
+          <div className="flex flex-col gap-2 max-w-6xl mx-auto relative" ref={containerRef}>
+            <div className="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-2">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search by location"
+                  className="w-full px-4 py-3 border-0 rounded md:rounded-l outline-none pr-10"
+                  value={searchParams.location}
+                  onChange={(e) => handleSearchInput("location", e.target.value)}
+                />
+                {searchParams.location && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                  </button>
+                )}
+              </div>
+              
+              <select
+                className="px-4 py-3 border-0 md:border-l border-gray-200 outline-none bg-white rounded md:rounded-none"
+                value={searchParams.propertyType}
+                onChange={(e) => handleSearchInput("propertyType", e.target.value)}
+              >
                 <option>Property Type</option>
                 <option>Villa</option>
                 <option>Apartment</option>
                 <option>House</option>
               </select>
-            </div>
-
-            <div className="flex w-full md:w-auto">
-              <select className="px-4 py-3 border-l border-gray-200 outline-none bg-white">
+              <select
+                className="px-4 py-3 border-0 md:border-l border-gray-200 outline-none bg-white rounded md:rounded-none md:rounded-r"
+                value={searchParams.country}
+                onChange={(e) => handleSearchInput("country", e.target.value)}
+              >
                 <option>Country</option>
                 <option>Spain</option>
                 <option>USA</option>
               </select>
             </div>
 
-            <button className="w-full md:w-auto px-8 py-3 bg-[#d3c196] text-white font-medium rounded-r hover:bg-[#b8a578] transition-colors">
-              SEARCH
-            </button>
-          </div>
-
-          {/* Mobile Search Section */}
-          <div className="md:hidden bg-transparent border-1 border border-white p-6 rounded-lg max-w-sm mx-auto">
-            <div className="flex flex-col gap-4">
-              <input
-                type="text"
-                placeholder="Search by location"
-                className="w-full px-4 py-3 border border-gray-200 rounded outline-none"
-              />
-
-              <select className="w-full px-4 py-3 border border-gray-200 rounded outline-none bg-white appearance-none">
-                <option>Property Type</option>
-                <option>Villa</option>
-                <option>Apartment</option>
-                <option>House</option>
-              </select>
-
-              <select className="w-full px-4 py-3 border border-gray-200 rounded outline-none bg-white appearance-none">
-                <option>Country</option>
-                <option>Spain</option>
-                <option>USA</option>
-              </select>
-
-              <button className="w-full px-8 py-3 bg-[#d3c196] text-white font-medium rounded hover:bg-[#b8a578] transition-colors flex items-center justify-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                SEARCH
-              </button>
-            </div>
-          </div>
-
-          {/* Three dots with info */}
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 mt-12 text-white text-sm md:text-base">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#d3c196]"></span>
-              <span>10,000+ HOMES SOLD</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#d3c196]"></span>
-              <span>2 BILLION $ IN SALES</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#d3c196]"></span>
-              <span>4,000+ SATISFIED CUSTOMERS</span>
-            </div>
+            {/* Suggestions Dropdown Meny */}
+            {isDropdownVisible && suggestions.length > 0 && (
+              <div className="absolute bg-white border rounded-lg shadow-lg mt-[3.2rem] max-w-6xl w-full max-h-96 overflow-y-auto z-50">
+                <div className="p-2 space-y-1">
+                  {suggestions.map((suggestion) => (
+                    <div
+                      key={suggestion.id}
+                      className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-md cursor-pointer"
+                      onClick={() => handleSuggestionClick(suggestion.id)}
+                    >
+                      <img
+                        src={suggestion.mainimage}
+                        alt={suggestion.propertytitle}
+                        className="w-16 h-16 object-cover rounded-md flex-shrink-0"
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-medium text-gray-900 truncate">
+                          {suggestion.propertytitle}
+                        </span>
+                        <span className="text-sm text-gray-500 truncate">
+                          {suggestion.category || "Location not specified"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
       <div className="bg-gray-50 py-16">
-        <VillasListings />
+        <VillasListings data={filteredListings.villas} />
       </div>
-
-      {/* Marketing Hero Section */}
-      <div className="relative min-h-[60vh]">
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('https://img.jamesedition.com/listing_images/2024/09/30/16/03/26/9143142c-3680-45f1-9c61-8512c58e7ca2/je/1900xxs.jpg')`,
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50"></div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Discover Your Dream Home in Spain
-          </h2>
-          <p className="text-white/80 max-w-2xl mb-8">
-            Experience the perfect blend of luxury and comfort in the most
-            luxurious locations across the Iberian Peninsula. From beachfront
-            villas to urban penthouses, find your perfect Spanish retreat.
-          </p>
-          <button className="px-8 py-3 bg-[#d3c196] text-white font-medium rounded hover:bg-[#b8a578] transition-colors">
-            Explore Spanish Properties
-          </button>
-        </div>
-      </div>
-
+      <SpainHero />
       <div className="bg-gray-50 py-16">
-        <SpainListings />
+        <SpainListings data={filteredListings.spain} />
+      </div>
+      <div className="bg-gray-50 py-16">
+        <Team />
+      </div>
+      <div className="bg-gray-50 pb-16">
+        <ApartmentsListings data={filteredListings.apartments} />
       </div>
     </>
   );
 };
+export default Home;
