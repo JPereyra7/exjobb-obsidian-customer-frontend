@@ -7,6 +7,7 @@ import Team from "../components/Team";
 import VillasListings from "../components/VillasListings";
 import { getListingsByCategory } from "../services/listingService";
 import { iListings } from "../models/iListings";
+import HomeSkeleton from "../components/HomeSkeleton";
 
 interface FilteredListings {
   villas: iListings[];
@@ -18,8 +19,9 @@ export const Home = () => {
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState<iListings[]>([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<null | HTMLDivElement>(null);
-  
+
   const [searchParams, setSearchParams] = useState({
     location: "",
     propertyType: "",
@@ -34,6 +36,7 @@ export const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const villas = await getListingsByCategory("villas");
         const spain = await getListingsByCategory("spain");
@@ -43,6 +46,7 @@ export const Home = () => {
       } catch (error) {
         console.error("Error fetching filtered data:", error);
       }
+      setIsLoading(false);
     };
 
     fetchData();
@@ -50,7 +54,10 @@ export const Home = () => {
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setIsDropdownVisible(false);
       }
     };
@@ -94,7 +101,7 @@ export const Home = () => {
     <>
       <div className="relative min-h-[80vh]">
         {/* Hero Section */}
-       <div
+        <div
           className="absolute inset-0 w-full h-full bg-cover bg-center"
           style={{
             backgroundImage: `url('https://img.jamesedition.com/listing_images/2024/10/03/11/21/25/3b9daabf-e88c-41e3-957e-1390f8bc86f9/je/1900xxsxm.jpg')`,
@@ -119,7 +126,10 @@ export const Home = () => {
           </p>
 
           {/* Search Section + Mobile */}
-          <div className="flex flex-col gap-2 max-w-6xl mx-auto relative" ref={containerRef}>
+          <div
+            className="flex flex-col gap-2 max-w-6xl mx-auto relative"
+            ref={containerRef}
+          >
             <div className="flex flex-col md:flex-row justify-center items-stretch md:items-center gap-2">
               <div className="relative w-full">
                 <input
@@ -127,21 +137,24 @@ export const Home = () => {
                   placeholder="Search by location"
                   className="w-full px-4 py-3 border-0 rounded md:rounded-l outline-none pr-10"
                   value={searchParams.location}
-                  onChange={(e) => handleSearchInput("location", e.target.value)}
+                  onChange={(e) =>
+                    handleSearchInput("location", e.target.value)
+                  }
                 />
                 {searchParams.location && (
                   <button
                     onClick={clearSearch}
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                  </button>
+                  ></button>
                 )}
               </div>
-              
+
               <select
                 className="px-4 py-3 border-0 md:border-l border-gray-200 outline-none bg-white rounded md:rounded-none"
                 value={searchParams.propertyType}
-                onChange={(e) => handleSearchInput("propertyType", e.target.value)}
+                onChange={(e) =>
+                  handleSearchInput("propertyType", e.target.value)
+                }
               >
                 <option>Property Type</option>
                 <option>Villa</option>
@@ -190,19 +203,26 @@ export const Home = () => {
           </div>
         </div>
       </div>
-      <div className="bg-gray-50 py-16">
-        <VillasListings data={filteredListings.villas} />
-      </div>
-      <SpainHero />
-      <div className="bg-gray-50 py-16">
-        <SpainListings data={filteredListings.spain} />
-      </div>
-      <div className="bg-gray-50 py-16">
-        <Team />
-      </div>
-      <div className="bg-gray-50 pb-16">
-        <ApartmentsListings data={filteredListings.apartments} />
-      </div>
+
+      {isLoading ? (
+        <HomeSkeleton />
+      ) : (
+        <>
+          <div className="bg-gray-50 py-16">
+            <VillasListings data={filteredListings.villas} />
+          </div>
+          <SpainHero />
+          <div className="bg-gray-50 py-16">
+            <SpainListings data={filteredListings.spain} />
+          </div>
+          <div className="bg-gray-50 py-16">
+            <Team />
+          </div>
+          <div className="bg-gray-50 pb-16">
+            <ApartmentsListings data={filteredListings.apartments} />
+          </div>
+        </>
+      )}
     </>
   );
 };

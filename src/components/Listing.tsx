@@ -3,27 +3,38 @@ import { useNavigate, useParams } from "react-router-dom";
 import { iListings } from "../models/iListings";
 import { getListingById } from "../services/listingService";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ListingsSkeleton from "./ListingsSkeleton";
 
 const Listing = () => {
   const { id } = useParams();
   const [listing, setListing] = useState<iListings | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [allImages, setAllImages] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchListing = async () => {
+      setIsLoading(true); // Start loading
       if (id) {
-        const data = await getListingById(id);
-        setListing(data);
-        if (data) {
-          const images = [data.mainimage, ...data.additionalimages];
-          setAllImages(images);
+        try {
+          const data = await getListingById(id);
+          setListing(data);
+          if (data) {
+            const images = [data.mainimage, ...data.additionalimages];
+            setAllImages(images);
+          }
+        } catch (error) {
+          console.error("Error fetching listing:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
     };
     fetchListing();
   }, [id]);
+  if (isLoading) return <ListingsSkeleton />;
+  if (!listing) return <div>No listing found</div>;
 
   const handleNavigateToHome = () => {
     navigate("/");
