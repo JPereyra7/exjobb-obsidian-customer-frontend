@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { VillasListingsProps } from "../models/VillasListingsProps";
+import '../index.css'
 
 export const VillasListings = ({ data }: VillasListingsProps) => {
   const navigate = useNavigate();
