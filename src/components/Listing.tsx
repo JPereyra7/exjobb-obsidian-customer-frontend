@@ -15,7 +15,7 @@ const Listing = () => {
 
   useEffect(() => {
     const fetchListing = async () => {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       if (id) {
         try {
           const data = await getListingById(id);
