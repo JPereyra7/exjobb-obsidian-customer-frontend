@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# Exjobb Lillard & Co
+
+url: https://lillardco-realestate.netlify.app/
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
